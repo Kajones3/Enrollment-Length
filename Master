@@ -1,0 +1,54 @@
+
+#First things first. Let's read in the data
+enroll7 <- read.csv("enroll7.csv", header = TRUE)
+enroll6 <- read.csv("enroll6.csv", header = TRUE)
+
+#What is going on?
+sapply(enroll7, class)
+
+#Some of these aren't dates
+#And I need R to show them as dates
+enroll7$Created.Date <- as.Date(enroll7$Created.Date, format="%m/%d/%Y")
+enroll7$Created.Date
+
+#This did not work
+enroll7[cols] <- lapply(cols, as.Date, format="%m/%d/%Y")
+str(enroll7)
+
+#and by hand...
+enroll7$Contacted.Date <- as.Date(enroll7$Contacted.Date, format="%m/%d/%Y")
+enroll7$Contacted.Date
+enroll7$Scheduled.Date <- as.Date(enroll7$Scheduled.Date, format="%m/%d/%Y")
+enroll7$Showed.Date <- as.Date(enroll7$Showed.Date, format="%m/%d/%Y")
+enroll7$Enrollment.Date <- as.Date(enroll7$Enrollment.Date, format="%m/%d/%Y")
+
+#and again for enroll6
+enroll6$Created.Date <- as.Date(enroll6$Created.Date, format="%m/%d/%Y")
+enroll6$Contacted.Date <- as.Date(enroll6$Contacted.Date, format="%m/%d/%Y")
+enroll6$Scheduled.Date <- as.Date(enroll6$Scheduled.Date, format="%m/%d/%Y")
+enroll6$Showed.Date <- as.Date(enroll6$Showed.Date, format="%m/%d/%Y")
+enroll6$Enrollment.Date <- as.Date(enroll6$Enrollment.Date, format="%m/%d/%Y")
+#Check our work
+sapply(enroll7, class)
+sapply(enroll6, class)
+#We did it! Let's subtract a few dates and see what we get.
+enroll6$TimetoEnroll <- enroll6$Enrollment.Date - enroll6$Created.Date 
+print(enroll6$TimetoEnroll)
+
+#What is the average time from creation to enrollment January 2016? Average 45 days and Median of 22.5 days
+mean(enroll6$TimetoEnroll, na.rm = TRUE)
+median(enroll6$TimetoEnroll, na.rm = TRUE)
+
+#What is the average time from creation to enrollment January 2017? Average 42.24 days and Median of 14 days
+enroll7$TimetoEnroll <- enroll7$Enrollment.Date - enroll7$Created.Date 
+mean(enroll7$TimetoEnroll, na.rm = TRUE)
+median(enroll7$TimetoEnroll, na.rm = TRUE)
+
+#We need to convert these to integers so that we can graph them.
+enroll7$TimetoEnroll <- as.integer(enroll7$TimetoEnroll)
+enroll6$TimetoEnroll <- as.integer(enroll6$TimetoEnroll)
+
+#Now let's box and whiskers them.
+boxplot(enroll6$TimetoEnroll,enroll7$TimetoEnroll, names=c("2016","2017"), ylim=c(0, 80))
+
+
